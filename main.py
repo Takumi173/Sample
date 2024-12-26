@@ -125,5 +125,5 @@ for file in files_to_display:
     gb.configure_default_column(editable=False, filter=True)
     grid_options = gb.build()
 
-    # AgGridを表示
-    AgGrid(df[file], gridOptions=grid_options, enable_enterprise_modules=True)
+    # AgGridを表示（一意のキーを指定）
+    AgGrid(df[file], gridOptions=grid_options, enable_enterprise_modules=True, key=file)
