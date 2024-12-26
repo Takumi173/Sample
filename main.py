@@ -22,9 +22,15 @@ root = tree.getroot()
 origin_vars = {}
 for itemdef in root.findall('.//{http://www.cdisc.org/ns/odm/v1.2}ItemDef'):
     origin = itemdef.get('Origin', 'Other')
+    # originがCRFで始まる場合、originをCRFに設定
+    if origin.startswith('CRF'):
+        origin = 'CRF'
     if origin not in origin_vars:
         origin_vars[origin] = []
-    origin_vars[origin].append(itemdef.get('Name'))
+    origin_vars[origin].append((itemdef.get('OID'), itemdef.get('Name')))
+
+# チェックボックスの並び順
+checkbox_order = ["CRF", "eDT", "Assigned", "Derived", "Protocol"]
 
 # テーブルの幅を設定するCSS
 table_style = """
@@ -49,10 +55,10 @@ def readJSON(domain):
         data = json.load(file)
 
     # 列名からラベルへのマッピングを作成
-    column_labels = {col['name']: f"{col['name']} ({col['label']})" for col in data['columns']}
+    column_labels = {col['itemOID']: f"{col['name']} ({col['label']})" for col in data['columns']}
 
     # データフレームの作成
-    columns = [col['name'] for col in data['columns']]
+    columns = [col['itemOID'] for col in data['columns']]
     df = pd.DataFrame(data['rows'], columns=columns)
 
     # 列名を「変数名 (ラベル)」の形式に変更
@@ -71,8 +77,9 @@ page = st.sidebar.selectbox("ページを選択してください", ["Study Data
 
 # 各Originごとにチェックボックスを作成
 show_vars = {}
-for origin in origin_vars:
-    show_vars[origin] = st.sidebar.checkbox(f'Show {origin} variables', value=True)
+for origin in checkbox_order:
+    if origin in origin_vars:
+        show_vars[origin] = st.sidebar.checkbox(f'Show {origin} variables', value=(origin in ["CRF", "eDT"]))
 
 # USUBJIDの選択（Study Dataページのみ）
 if page == "Study Data":
@@ -99,14 +106,17 @@ for file in files_to_display:
 
     if page == "Study Data":
         # Study DataページのみUSUBJIDでフィルタリング
-        df[file] = df[file][df[file][labels[file]['USUBJID']] == usubjid]
+        df[file] = df[file][df[file][labels[file][file.upper()+'.USUBJID']] == usubjid]
 
     # チェックボックスに基づいて変数をフィルタリング
     columns_to_show = []
     for origin, show in show_vars.items():
         if show:
-            columns_to_show.extend([col for col in df[file].columns if col.split(' ')[0] in origin_vars[origin]])
-    
+            for oid, name in origin_vars[origin]:
+                file_name, var_name = oid.split('.')[0], oid.split('.')[1]
+                if file == file_name.lower() and oid in labels[file]:
+                    columns_to_show.append(labels[file][oid])
+
     # フィルタリングされた列だけを表示
     df[file] = df[file][columns_to_show]
 
