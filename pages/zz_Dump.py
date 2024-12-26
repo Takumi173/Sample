@@ -72,17 +72,6 @@ with open(directory_path+'dm.json', 'r') as file:
 # USUBJIDのリストを取得
 usubjid_list = [row[2] for row in usubjid_source_data['rows']]
 
-# ページの選択
-page = st.sidebar.selectbox("Select Page", ["Study Data", "Trial Domains", "Dump"])
-
-# 選択したページの値をセッションステートに保存
-if 'selected_page' not in st.session_state:
-    st.session_state.selected_page = page
-
-# 選択したページが変更された場合、ヘッダーをクリア
-if st.session_state.selected_page != page:
-    st.session_state.selected_page = page
-    st.header("")
 
 # 各Originごとにチェックボックスを作成
 show_vars = {}
@@ -93,24 +82,8 @@ for origin in checkbox_order:
 # STUDYIDを読み込まないオプションのチェックボックス
 show_studyid = st.sidebar.checkbox('Show STUDYID')
 
-# USUBJIDの選択（Study Dataページのみ）
-if page == "Study Data":
-    st.sidebar.markdown('[USUBJID](#usubjid)')
-    st.header("USUBJID")
-    usubjid = st.selectbox('Select USUBJID', usubjid_list)
-
-# データのフィルタリング関数
-def filter_files(page, json_files):
-    if page == "Study Data":
-        filtered_files = [f for f in json_files if f[:2] not in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
-    elif page == "Trial Domains":
-        filtered_files = [f for f in json_files if f[:2] in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
-    else:
-        filtered_files = json_files
-    return filtered_files
-
 # フィルタリングされたファイルのリストを取得
-files_to_display = filter_files(page, json_files)
+files_to_display = [f for f in json_files if f[:2] in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
 
 # 優先順序のリスト
 priority_order_0 = ['dm', 'mh', 'sc', 'ds', 'ex']
@@ -146,10 +119,6 @@ for file in files_to_display:
     df = {}
     labels = {}
     df[file], labels[file] = readJSON(file)
-
-    if page == "Study Data":
-        # Study DataページのみUSUBJIDでフィルタリング
-        df[file] = df[file][df[file][labels[file][file.upper()+'.USUBJID']] == usubjid]
 
     # チェックボックスに基づいて変数をフィルタリング
     columns_to_show = []
