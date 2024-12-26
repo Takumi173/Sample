@@ -1,1 +1,1 @@
-/usr/local/bin/streamlit run "/workspace/main.py"
+/usr/local/bin/streamlit run "/workspace/00 Study Data.py"
