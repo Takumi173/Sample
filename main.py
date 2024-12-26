@@ -6,13 +6,13 @@ from st_aggrid import AgGrid, GridOptionsBuilder
 import os
 
 # 指定ディレクトリのパス
-directory_path = '/workspace/sdtm-adam-pilot-project/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/tabulations/sdtm/'
+directory_path = 'DatasetJSON/'
 
 # 指定ディレクトリ内のJSONファイルをリストで取得
 json_files = [os.path.splitext(f)[0] for f in os.listdir(directory_path) if f.endswith('.json')]
 
 # XMLファイルのパス
-xml_path = '/workspace/sdtm-adam-pilot-project/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/tabulations/sdtm/define.xml'
+xml_path = 'DatasetJSON/define.xml'
 
 # XMLファイルの読み込み
 tree = ET.parse(xml_path)
