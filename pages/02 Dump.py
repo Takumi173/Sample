@@ -77,10 +77,10 @@ usubjid_list = [row[2] for row in usubjid_source_data['rows']]
 show_vars = {}
 for origin in checkbox_order:
     if origin in origin_vars:
-        show_vars[origin] = st.sidebar.checkbox(f'Show {origin} variables', value=(origin in ["CRF", "eDT"]))
+        show_vars[origin] = st.sidebar.checkbox(f'Show {origin} variables', value=True)
 
 # STUDYIDを読み込まないオプションのチェックボックス
-show_studyid = st.sidebar.checkbox('Show STUDYID')
+show_studyid = st.sidebar.checkbox('Show STUDYID', value=True)
 
 # フィルタリングされたファイルのリストを取得
 files_to_display = json_files
