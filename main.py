@@ -109,6 +109,31 @@ def filter_files(page, json_files):
 
 # フィルタリングされたファイルのリストを取得
 files_to_display = filter_files(page, json_files)
+
+# 優先順序のリスト
+priority_order_0 = ['dm', 'mh', 'sc', 'ds', 'ex']
+priority_order_1 = ['vs', 'lb', ]
+priority_order_2 = ['ae', 'cm', ]
+
+# カスタムキーを定義
+def custom_sort_key(item):
+    if item in priority_order_0:
+        return (0, priority_order_0.index(item))
+    if item in priority_order_1:
+        return (1, priority_order_1.index(item))
+    if item in priority_order_2:
+        return (3, priority_order_2.index(item))
+    elif item.startswith('supp'):
+        return (4, item)
+    elif item.startswith('relrec'):
+        return (5, item)
+    else:
+        return (2, item)
+
+# 並べ替え
+files_to_display = sorted(files_to_display, key=custom_sort_key)
+
+
 # データの表示
 for file in files_to_display:
     st.header(file.upper())
