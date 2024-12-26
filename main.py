@@ -73,7 +73,7 @@ with open(directory_path+'dm.json', 'r') as file:
 usubjid_list = [row[2] for row in usubjid_source_data['rows']]
 
 # ページの選択
-page = st.sidebar.selectbox("Select Page", ["Study Data", "Trial Domains"])
+page = st.sidebar.selectbox("Select Page", ["Study Data", "Trial Domains", "Dump"])
 
 # 選択したページの値をセッションステートに保存
 if 'selected_page' not in st.session_state:
@@ -103,8 +103,10 @@ if page == "Study Data":
 def filter_files(page, json_files):
     if page == "Study Data":
         filtered_files = [f for f in json_files if f[:2] not in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
-    else:  # Trial Domains
+    elif page == "Trial Domains":
         filtered_files = [f for f in json_files if f[:2] in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
+    else:
+        filtered_files = json_files
     return filtered_files
 
 # フィルタリングされたファイルのリストを取得
@@ -114,6 +116,7 @@ files_to_display = filter_files(page, json_files)
 priority_order_0 = ['dm', 'mh', 'sc', 'ds', 'ex']
 priority_order_1 = ['vs', 'lb', ]
 priority_order_2 = ['ae', 'cm', ]
+priority_order_9 = ["sv", "se", "ta", "te", "ts", "ti", "tv",]
 
 # カスタムキーを定義
 def custom_sort_key(item):
@@ -123,6 +126,8 @@ def custom_sort_key(item):
         return (1, priority_order_1.index(item))
     if item in priority_order_2:
         return (3, priority_order_2.index(item))
+    if item in priority_order_9:
+        return (9, priority_order_9.index(item))
     elif item.startswith('supp'):
         return (4, item)
     elif item.startswith('relrec'):
