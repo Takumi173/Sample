@@ -90,6 +90,9 @@ for origin in checkbox_order:
     if origin in origin_vars:
         show_vars[origin] = st.sidebar.checkbox(f'Show {origin} variables', value=(origin in ["CRF", "eDT"]))
 
+# STUDYIDを読み込まないオプションのチェックボックス
+show_studyid = st.sidebar.checkbox('Show STUDYID')
+
 # USUBJIDの選択（Study Dataページのみ）
 if page == "Study Data":
     st.sidebar.markdown('[USUBJID](#usubjid)')
@@ -129,6 +132,10 @@ for file in files_to_display:
 
     # フィルタリングされた列だけを表示
     df[file] = df[file][columns_to_show]
+
+    # STUDYIDを除外する場合、列を削除
+    if show_studyid == False and 'STUDYID (Study Identifier)' in df[file].columns:
+        df[file] = df[file].drop(columns=['STUDYID (Study Identifier)'])
 
     # AgGridのオプションを設定
     gb = GridOptionsBuilder.from_dataframe(df[file])
