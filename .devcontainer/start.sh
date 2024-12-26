@@ -1,0 +1,1 @@
+/usr/local/bin/streamlit run /workspace/main.py

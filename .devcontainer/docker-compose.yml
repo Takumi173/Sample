@@ -1,0 +1,22 @@
+services:
+    # コンテナを作成
+    workspace:
+        # 使用するimageとタグの指定
+        build:
+            context: ..
+            dockerfile: .devcontainer/Dockerfile
+
+        # Network modeの設定
+        network_mode: bridge
+
+        # 環境変数の指定
+        environment:
+            PYTHONPATH: /workspace
+
+        # Localボリュームの指定
+        volumes:
+            - ..:/workspace
+            - ../../01_data:/workspace/data
+        
+        # コンテナを起動し続ける
+        command: sleep infinity
