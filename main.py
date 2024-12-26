@@ -75,6 +75,15 @@ usubjid_list = [row[2] for row in usubjid_source_data['rows']]
 # ページの選択
 page = st.sidebar.selectbox("Select Page", ["Study Data", "Trial Domains"])
 
+# 選択したページの値をセッションステートに保存
+if 'selected_page' not in st.session_state:
+    st.session_state.selected_page = page
+
+# 選択したページが変更された場合、ヘッダーをクリア
+if st.session_state.selected_page != page:
+    st.session_state.selected_page = page
+    st.header("")
+
 # 各Originごとにチェックボックスを作成
 show_vars = {}
 for origin in checkbox_order:
