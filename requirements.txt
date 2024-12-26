@@ -1,3 +1,2 @@
-pip install ipykernel
-pip install streamlit
-pip install streamlit-aggrid
+streamlit
+streamlit-aggrid
