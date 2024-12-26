@@ -73,7 +73,7 @@ with open('/workspace/sdtm-adam-pilot-project/updated-pilot-submission-package/9
 usubjid_list = [row[2] for row in usubjid_source_data['rows']]
 
 # ページの選択
-page = st.sidebar.selectbox("ページを選択してください", ["Study Data", "Trial Domains"])
+page = st.sidebar.selectbox("Select Page", ["Study Data", "Trial Domains"])
 
 # 各Originごとにチェックボックスを作成
 show_vars = {}
@@ -83,19 +83,20 @@ for origin in checkbox_order:
 
 # USUBJIDの選択（Study Dataページのみ）
 if page == "Study Data":
-    usubjid = st.selectbox('USUBJIDを選択してください', usubjid_list)
+    st.sidebar.markdown('[USUBJID](#usubjid)')
+    st.header("USUBJID")
+    usubjid = st.selectbox('Select USUBJID', usubjid_list)
 
 # データのフィルタリング関数
 def filter_files(page, json_files):
     if page == "Study Data":
-        filtered_files = [f for f in json_files if f[:2] not in ["ta", "te", "ts", "ti", "tv"]]
+        filtered_files = [f for f in json_files if f[:2] not in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
     else:  # Trial Domains
-        filtered_files = [f for f in json_files if f[:2] in ["ta", "te", "ts", "ti", "tv"]]
+        filtered_files = [f for f in json_files if f[:2] in ["ta", "te", "ts", "ti", "tv", "sv", "se"]]
     return filtered_files
 
 # フィルタリングされたファイルのリストを取得
 files_to_display = filter_files(page, json_files)
-
 # データの表示
 for file in files_to_display:
     st.header(file.upper())
