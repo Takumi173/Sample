@@ -66,7 +66,7 @@ def readJSON(domain):
     return df, column_labels
 
 # USUBJIDを取得するJSONファイルの読み込み
-with open('/workspace/sdtm-adam-pilot-project/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/tabulations/sdtm/dm.json', 'r') as file:
+with open(directory_path+'dm.json', 'r') as file:
     usubjid_source_data = json.load(file)
 
 # USUBJIDのリストを取得
